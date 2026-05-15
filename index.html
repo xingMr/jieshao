@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>个人简介</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* ===== Header ===== */
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 48px;
+      color: #fff;
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .header p {
+      color: #666;
+      margin-top: 6px;
+      font-size: 15px;
+    }
+
+    /* ===== Cards ===== */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 32px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      transition: box-shadow 0.2s;
+    }
+
+    .card:hover {
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .card-title .icon {
+      font-size: 22px;
+    }
+
+    /* ===== Resume / About ===== */
+    .resume-wrap {
+      position: relative;
+    }
+
+    .resume-textarea {
+      width: 100%;
+      min-height: 140px;
+      padding: 14px 16px;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.8;
+      resize: vertical;
+      font-family: inherit;
+      color: #333;
+      transition: border-color 0.2s;
+      background: #fff;
+    }
+
+    .resume-textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+    }
+
+    .resume-textarea:disabled {
+      resize: none;
+      background: #f9f9fb;
+      border-color: #e8e8ec;
+      cursor: default;
+    }
+
+    .resume-lock-btn {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      padding: 6px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .resume-lock-btn.lock {
+      background: #667eea;
+      color: #fff;
+    }
+
+    .resume-lock-btn.lock:hover {
+      background: #5a6fd6;
+    }
+
+    .resume-lock-btn.unlock {
+      background: #f0f0f0;
+      color: #666;
+    }
+
+    .resume-lock-btn.unlock:hover {
+      background: #e4e4e4;
+    }
+
+    /* ===== Skills ===== */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .skill-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .skill-item .skill-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 14px;
+    }
+
+    .skill-item .skill-name {
+      font-weight: 500;
+    }
+
+    .skill-item .skill-pct {
+      color: #888;
+    }
+
+    .skill-bar {
+      height: 8px;
+      background: #eee;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .skill-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      width: 0%;
+      transition: width 0.6s ease;
+    }
+
+    /* ===== Cities ===== */
+    .city-controls {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .city-input {
+      flex: 1;
+      min-width: 160px;
+      padding: 10px 14px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .city-input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-danger {
+      background: #fee;
+      color: #c0392b;
+    }
+
+    .btn-danger:hover {
+      background: #fdd;
+    }
+
+    .city-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .city-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      background: #f8f9fb;
+      border-radius: 10px;
+      transition: background 0.2s;
+    }
+
+    .city-card:hover {
+      background: #f0f2f6;
+    }
+
+    .city-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .city-name {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    .city-region {
+      font-size: 13px;
+      color: #888;
+    }
+
+    .city-region strong {
+      color: #667eea;
+      font-weight: 600;
+    }
+
+    .city-remove {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #ccc;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .city-remove:hover {
+      color: #e74c3c;
+      background: #fee;
+    }
+
+    .empty-tip {
+      text-align: center;
+      color: #aaa;
+      padding: 32px 0;
+      font-size: 14px;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 600px) {
+      body { padding: 20px 12px; }
+      .card { padding: 20px 16px; }
+      .city-controls { flex-direction: column; }
+      .skills-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="avatar">😊</div>
+      <h1>张三</h1>
+      <p>热爱旅行与技术</p>
+    </div>
+
+    <!-- 简历 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📄</span> 简历</div>
+      <div class="resume-wrap">
+        <textarea class="resume-textarea" id="resumeInput" placeholder="在此输入您的个人简介、教育背景、工作经历……">拥有 5 年全栈开发经验，擅长 Vue.js / React 前端框架及 Node.js 后端开发。曾主导多个大型电商平台的前端架构设计，具备良好的团队协作与项目管理能力。热爱开源社区，持续关注前沿技术动态。</textarea>
+        <button class="resume-lock-btn lock" id="resumeLockBtn" onclick="toggleResumeLock()">锁定</button>
+      </div>
+    </div>
+
+    <!-- 技能 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">⚡</span> 技能</div>
+      <div class="skills-grid" id="skillsGrid"></div>
+    </div>
+
+    <!-- 城市足迹 -->
+    <div class="card">
+      <div class="card-title"><span class="icon">📍</span> 去过的地方</div>
+      <div class="city-controls">
+        <input class="city-input" id="cityInput" placeholder="输入城市名，如 成都" list="citySuggestions">
+        <datalist id="citySuggestions"></datalist>
+        <button class="btn btn-primary" onclick="addCity()">添加</button>
+      </div>
+      <div class="city-list" id="cityList"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // ============================================================
+    //  城市 → 地区映射（中国主要城市 + 世界热门城市）
+    // ============================================================
+    const CITY_REGIONS = {
+      // --- 华东 ---
+      "上海":       { region: "华东",  province: "上海市" },
+      "南京":       { region: "华东",  province: "江苏省" },
+      "苏州":       { region: "华东",  province: "江苏省" },
+      "无锡":       { region: "华东",  province: "江苏省" },
+      "杭州":       { region: "华东",  province: "浙江省" },
+      "宁波":       { region: "华东",  province: "浙江省" },
+      "温州":       { region: "华东",  province: "浙江省" },
+      "合肥":       { region: "华东",  province: "安徽省" },
+      "福州":       { region: "华东",  province: "福建省" },
+      "厦门":       { region: "华东",  province: "福建省" },
+      "南昌":       { region: "华东",  province: "江西省" },
+      "济南":       { region: "华东",  province: "山东省" },
+      "青岛":       { region: "华东",  province: "山东省" },
+      // --- 华北 ---
+      "北京":       { region: "华北",  province: "北京市" },
+      "天津":       { region: "华北",  province: "天津市" },
+      "石家庄":     { region: "华北",  province: "河北省" },
+      "唐山":       { region: "华北",  province: "河北省" },
+      "太原":       { region: "华北",  province: "山西省" },
+      "呼和浩特":   { region: "华北",  province: "内蒙古自治区" },
+      // --- 华中 ---
+      "郑州":       { region: "华中",  province: "河南省" },
+      "武汉":       { region: "华中",  province: "湖北省" },
+      "长沙":       { region: "华中",  province: "湖南省" },
+      // --- 华南 ---
+      "广州":       { region: "华南",  province: "广东省" },
+      "深圳":       { region: "华南",  province: "广东省" },
+      "珠海":       { region: "华南",  province: "广东省" },
+      "东莞":       { region: "华南",  province: "广东省" },
+      "南宁":       { region: "华南",  province: "广西壮族自治区" },
+      "海口":       { region: "华南",  province: "海南省" },
+      "三亚":       { region: "华南",  province: "海南省" },
+      // --- 西南 ---
+      "重庆":       { region: "西南",  province: "重庆市" },
+      "成都":       { region: "西南",  province: "四川省" },
+      "贵阳":       { region: "西南",  province: "贵州省" },
+      "昆明":       { region: "西南",  province: "云南省" },
+      "拉萨":       { region: "西南",  province: "西藏自治区" },
+      // --- 西北 ---
+      "西安":       { region: "西北",  province: "陕西省" },
+      "兰州":       { region: "西北",  province: "甘肃省" },
+      "西宁":       { region: "西北",  province: "青海省" },
+      "银川":       { region: "西北",  province: "宁夏回族自治区" },
+      "乌鲁木齐":   { region: "西北",  province: "新疆维吾尔自治区" },
+      // --- 东北 ---
+      "沈阳":       { region: "东北",  province: "辽宁省" },
+      "大连":       { region: "东北",  province: "辽宁省" },
+      "长春":       { region: "东北",  province: "吉林省" },
+      "哈尔滨":     { region: "东北",  province: "黑龙江省" },
+      // --- 港澳台 ---
+      "香港":       { region: "港澳台", province: "香港特别行政区" },
+      "澳门":       { region: "港澳台", province: "澳门特别行政区" },
+      "台北":       { region: "港澳台", province: "台湾省" },
+      "高雄":       { region: "港澳台", province: "台湾省" },
+      // --- 亚洲其他 ---
+      "东京":       { region: "东亚",  province: "日本" },
+      "大阪":       { region: "东亚",  province: "日本" },
+      "京都":       { region: "东亚",  province: "日本" },
+      "首尔":       { region: "东亚",  province: "韩国" },
+      "曼谷":       { region: "东南亚", province: "泰国" },
+      "普吉岛":     { region: "东南亚", province: "泰国" },
+      "清迈":       { region: "东南亚", province: "泰国" },
+      "新加坡":     { region: "东南亚", province: "新加坡" },
+      "巴厘岛":     { region: "东南亚", province: "印度尼西亚" },
+      "吉隆坡":     { region: "东南亚", province: "马来西亚" },
+      "河内":       { region: "东南亚", province: "越南" },
+      "胡志明市":   { region: "东南亚", province: "越南" },
+      "迪拜":       { region: "西亚",  province: "阿联酋" },
+      // --- 欧美 ---
+      "伦敦":       { region: "西欧",  province: "英国" },
+      "巴黎":       { region: "西欧",  province: "法国" },
+      "罗马":       { region: "西欧",  province: "意大利" },
+      "米兰":       { region: "西欧",  province: "意大利" },
+      "巴塞罗那":   { region: "西欧",  province: "西班牙" },
+      "马德里":     { region: "西欧",  province: "西班牙" },
+      "柏林":       { region: "中欧",  province: "德国" },
+      "慕尼黑":     { region: "中欧",  province: "德国" },
+      "苏黎世":     { region: "中欧",  province: "瑞士" },
+      "阿姆斯特丹": { region: "西欧",  province: "荷兰" },
+      "纽约":       { region: "北美",  province: "美国" },
+      "洛杉矶":     { region: "北美",  province: "美国" },
+      "旧金山":     { region: "北美",  province: "美国" },
+      "波士顿":     { region: "北美",  province: "美国" },
+      "温哥华":     { region: "北美",  province: "加拿大" },
+      "多伦多":     { region: "北美",  province: "加拿大" },
+      "悉尼":       { region: "大洋洲", province: "澳大利亚" },
+      "墨尔本":     { region: "大洋洲", province: "澳大利亚" },
+      "奥克兰":     { region: "大洋洲", province: "新西兰" },
+    };
+
+    // ============================================================
+    //  预设数据
+    // ============================================================
+    const DEFAULT_SKILLS = [
+      { name: "JavaScript / TypeScript", level: 90 },
+      { name: "Vue.js / React",          level: 88 },
+      { name: "Node.js",                level: 82 },
+      { name: "Python",                 level: 75 },
+      { name: "CSS / Tailwind",         level: 85 },
+      { name: "Docker / DevOps",        level: 70 },
+    ];
+
+    const DEFAULT_CITIES = ["成都", "杭州", "上海", "厦门", "西安", "重庆", "曼谷", "东京"];
+
+    // ============================================================
+    //  渲染函数
+    // ============================================================
+    function renderSkills() {
+      const grid = document.getElementById("skillsGrid");
+      grid.innerHTML = DEFAULT_SKILLS.map(s => `
+        <div class="skill-item">
+          <div class="skill-label">
+            <span class="skill-name">${s.name}</span>
+            <span class="skill-pct">${s.level}%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-bar-fill" style="width:${s.level}%"></div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function getCityData(name) {
+      const trimmed = name.trim();
+      if (!trimmed) return null;
+
+      const known = CITY_REGIONS[trimmed];
+      if (known) {
+        return { name: trimmed, region: known.region, province: known.province };
+      }
+      return { name: trimmed, region: "未知地区", province: "" };
+    }
+
+    function renderCities() {
+      const saved = localStorage.getItem("my_cities");
+      const list = saved ? JSON.parse(saved) : [...DEFAULT_CITIES];
+      const container = document.getElementById("cityList");
+
+      if (list.length === 0) {
+        container.innerHTML = '<div class="empty-tip">还没有添加城市，输入一个城市开始吧 🚀</div>';
+        return;
+      }
+
+      container.innerHTML = list.map((name, i) => {
+        const data = getCityData(name);
+        const regionText = data.province
+          ? `${data.region} · ${data.province}`
+          : data.region;
+        return `
+          <div class="city-card">
+            <div class="city-info">
+              <span class="city-name">${data.name}</span>
+              <span class="city-region"><strong>${data.region}</strong>${data.province ? " · " + data.province : ""}</span>
+            </div>
+            <button class="city-remove" onclick="removeCity(${i})" title="移除">✕</button>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // ============================================================
+    //  操作函数
+    // ============================================================
+    function addCity() {
+      const input = document.getElementById("cityInput");
+      const name = input.value.trim();
+      if (!name) return;
+
+      const saved = localStorage.getItem("my_cities");
+      const list = saved ? JSON.parse(saved) : [...DEFAULT_CITIES];
+      list.push(name);
+      localStorage.setItem("my_cities", JSON.stringify(list));
+
+      input.value = "";
+      renderCities();
+    }
+
+    function removeCity(index) {
+      const saved = localStorage.getItem("my_cities");
+      const list = saved ? JSON.parse(saved) : [...DEFAULT_CITIES];
+      list.splice(index, 1);
+      localStorage.setItem("my_cities", JSON.stringify(list));
+      renderCities();
+    }
+
+    // ============================================================
+    //  简历锁定 / 解锁
+    // ============================================================
+    function toggleResumeLock() {
+      const ta = document.getElementById("resumeInput");
+      const btn = document.getElementById("resumeLockBtn");
+      const isLocked = ta.disabled;
+
+      if (isLocked) {
+        ta.disabled = false;
+        ta.focus();
+        btn.textContent = "锁定";
+        btn.className = "resume-lock-btn lock";
+        localStorage.setItem("resume_locked", "false");
+      } else {
+        ta.disabled = true;
+        btn.textContent = "编辑";
+        btn.className = "resume-lock-btn unlock";
+        localStorage.setItem("resume_locked", "true");
+        localStorage.setItem("resume_content", ta.value);
+      }
+    }
+
+    // 输入框支持回车添加
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("cityInput").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") addCity();
+      });
+
+      // 恢复简历状态
+      const ta = document.getElementById("resumeInput");
+      const btn = document.getElementById("resumeLockBtn");
+      const savedContent = localStorage.getItem("resume_content");
+      const savedLocked = localStorage.getItem("resume_locked");
+
+      if (savedContent !== null) ta.value = savedContent;
+      if (savedLocked === "true") {
+        ta.disabled = true;
+        btn.textContent = "编辑";
+        btn.className = "resume-lock-btn unlock";
+      } else {
+        ta.disabled = false;
+        btn.textContent = "锁定";
+        btn.className = "resume-lock-btn lock";
+      }
+
+      renderSkills();
+      renderCities();
+
+      // 填充 datalist 建议
+      const datalist = document.getElementById("citySuggestions");
+      datalist.innerHTML = Object.keys(CITY_REGIONS)
+        .map(c => `<option value="${c}">`)
+        .join("");
+    });
+  </script>
+</body>
+</html>
